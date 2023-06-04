@@ -121,7 +121,7 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 
 ### Machine Translation
 
-1. Download vocabulary file of mBART model and other files in the [drive]() into `/path/to/pretrain_mBART`.
+1. Download vocabulary file of mBART model and other files in the [drive](https://drive.google.com/drive/folders/1wqmM6eR1AG66ano-zbCzYykWoaQvYTJO?usp=sharing) into `/path/to/pretrain_mBART`.
 
 2. Choose one script of `exp_train_*.sh` and run it.
 
