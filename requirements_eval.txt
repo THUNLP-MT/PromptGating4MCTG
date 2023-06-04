@@ -1,0 +1,4 @@
+transformers
+datasets
+evaluate
+torch==1.12.1
