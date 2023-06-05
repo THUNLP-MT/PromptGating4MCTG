@@ -4,11 +4,11 @@ This is the repo for our work “[An Extensible Plug-and-Play Method for Multi-A
 
 ## Method Overview
 
-![method](./figs/extensible.png)
+![method](figs/extensible.png)
 
 Model Structure:
 
-![model](./figs/method.png)
+![model](figs/method.png)
 
 ## Requirements
 
