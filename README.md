@@ -121,17 +121,25 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 
 ### Machine Translation
 
-1. Download vocabulary file of mBART model and other files in the [drive](https://drive.google.com/drive/folders/1wqmM6eR1AG66ano-zbCzYykWoaQvYTJO?usp=sharing) into `/path/to/pretrain_mBART`.
+1. Download vocabulary file of mBART model and other files in the [google drive](https://drive.google.com/drive/folders/1wqmM6eR1AG66ano-zbCzYykWoaQvYTJO?usp=sharing) into `/path/to/pretrain_mBART`.
 
 2. Choose one script of `exp_train_*.sh` and run it.
 
-After training, you can transfer the prompts and gates in each model to one model and evaluate it. Some example script is `codes/thumt/scripts/substitute_prompt_gating.py`, `codes/thumt_gen/scripts/substitute_prompt_gating.py`
+After training, you can transfer the prompts and gates of each model into one model and evaluate it. Some example script is `codes/thumt/scripts/substitute_prompt_gating.py`, `codes/thumt_gen/scripts/substitute_prompt_gating.py`
 
 ## Evaluation
 
-> To-do: add evaluation explanation.
+After merging different prompts and gates, you can evaluate the model on different tasks.
 
 ### Generation
+
+1. Process the manual constraints for test set in `/path/to/processed/yelp/infer`, each of the file contains 375 lines of constraint sentences. For example, `neg_label.375.spm.txt` contains 375 lines of `This is a negative review.` and is tokenized.
+
+    Tokenized prefixes used in the paper are in `data\infer_gen\pre_tokens.25.spm.txt`. Positive key words and negative key words for inference are ramdomly sampled and tokenized in `data\infer_gen\maskfix.pos.375.spm.txt` and `data\infer_gen\maskfix.neg.375.spm.txt`. You still nees to install [this repo](https://github.com/ajitrajasekharan/simple_tense_detector) to evaluate the tense attribute.
+
+2. Train a classifier on sentiment and food category. The script is in `codes/train_classifier/train_*.py`. Follow the paper to oversample the raw data and train the classifiers.
+
+3. Run `codes\infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
 
 ### Machine Translation
 
@@ -156,3 +164,7 @@ If you find this repo helpful, please cite the following:
   year={2023}
 }
 ```
+
+## License
+
+> To-do: add license.

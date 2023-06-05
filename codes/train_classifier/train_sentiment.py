@@ -8,9 +8,9 @@ import evaluate
 metric = evaluate.load("accuracy")
 
 dataset = load_dataset('json', 
-                       data_files={'train': '/home/lzj/lzj/plug4MSG/data/yelp/yelp_over_sample/sample_sentiment/senti_sents_train.txt', 
-                                   'test': '/home/lzj/lzj/plug4MSG/data/yelp/yelp_over_sample/sample_sentiment/senti_sents_test.txt', 
-                                   'validation': '/home/lzj/lzj/plug4MSG/data/yelp/yelp_over_sample/sample_sentiment/senti_sents_valid.txt'},
+                       data_files={'train': '/path/to/processed/yelp/yelp_over_sample/sample_sentiment/senti_sents_train.txt', 
+                                   'test': '/path/to/processed/yelp/yelp_over_sample/sample_sentiment/senti_sents_test.txt', 
+                                   'validation': '/path/to/processed/yelp/yelp_over_sample/sample_sentiment/senti_sents_valid.txt'},
                        streaming=True)
 
 tokenizer = AutoTokenizer.from_pretrained("roberta-large")
@@ -24,13 +24,13 @@ tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 model = AutoModelForSequenceClassification.from_pretrained("roberta-large", num_labels=2)
 
 training_args = TrainingArguments(
-    output_dir='/home/lzj/lzj/plug4MSG/pluginMSG/train_classifier/sentiment_finetuned_model',          # output directory
+    output_dir='./train_classifier/sentiment_finetuned_model',          # output directory
     num_train_epochs=4,              # total # of training epochs
     per_device_train_batch_size=8,  # batch size per device during training
     per_device_eval_batch_size=32,   # batch size for evaluation
     warmup_steps=2000,                # number of warmup steps for learning rate scheduler
     weight_decay=0.01,               # strength of weight decay
-    logging_dir='/home/lzj/lzj/plug4MSG/pluginMSG/train_classifier/sentiment_finetuned_model',            # directory for storing logs
+    logging_dir='./train_classifier/sentiment_finetuned_model',            # directory for storing logs
     logging_steps=100,
     save_steps=2500,
     evaluation_strategy='steps',
