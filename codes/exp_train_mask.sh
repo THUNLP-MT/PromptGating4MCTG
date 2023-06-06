@@ -21,9 +21,9 @@ python $code_dir/thumt/bin/trainer.py \
     --model mBART --half --hparam_set big \
     --source_num 4 \
     --parameters \
-fixed_batch_size=false,batch_size=512,train_steps=300000,update_cycle=2,device_list=[$devs],\
-keep_checkpoint_max=10,save_checkpoint_steps=5000,\
-eval_steps=5001,decode_alpha=0.6,decode_batch_size=16,keep_top_checkpoint_max=5,\
+fixed_batch_size=false,batch_size=512,train_steps=150000,update_cycle=2,device_list=[$devs],\
+keep_checkpoint_max=10,save_checkpoint_steps=2500,\
+eval_steps=2501,decode_alpha=0.6,decode_batch_size=16,keep_top_checkpoint_max=5,\
 attention_dropout=0.1,relu_dropout=0.1,dropout=0.1,pattern="(new_adding.1)|(new_adding_wte.1)|(new_gating.1)|(new_gating_wte.1)|(segments.embeds.1)|(new_embedding.1)|(new_mlp_head.1)",learning_rate=4e-04,warmup_steps=10000,initial_learning_rate=5e-8,\
 src_attached=[1,1,0,0],prompt_num=100,prompt_attached=[1,1,0,0],\
 src_lang_tok="de_DE",hyp_lang_tok=["en_XX","en_XX","fr_XX"],tgt_lang_tok="en_XX",\

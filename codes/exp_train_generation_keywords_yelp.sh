@@ -7,13 +7,13 @@ code_dir=.
 train_dir=/path/to/processed/yelp
 vocab=/path/to/pretrain_BART/vocab.txt
 
-exp_name=train_generation_topic_bs1024_yelp
+exp_name=train_generation_mask_yelp
 
 CUDA_VISIBLE_DEVICES=$devices \
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$cuda_dir \
 PYTHONPATH=$code_dir/ \
 python $code_dir/thumt_gen/bin/trainer.py \
-    --input $train_dir/maskmany_label_train.spm.txt $train_dir/maskmany_sent_train.spm.txt \
+    --input $train_dir/mask_label_train.spm.txt $train_dir/mask_sent_train.spm.txt \
     --validation $train_dir/mask_label_valid.spm.txt $train_dir/mask_sent_valid.spm.txt \
     --reference $train_dir/mask_sent_valid.spm.txt \
     --output train_gen4 \

@@ -35,7 +35,7 @@ pip install -r requirements_eval.txt
 2. Detokenize the raw text and discard the samples with a sentiment score of 3 (neutral).
 
 3. Sample 30k/3k samples for training and validation respectively, and for positive/negative sentiment, Asian/USA/Mexican food respectively. (Remember the other attributes are balanced in each training/validation set.)  
-To identify the tense of each review sentence, we use [this repo](https://github.com/ajitrajasekharan/simple_tense_detector).  
+To identify the tense of each review sentence, we use [this repo](https://github.com/ajitrajasekharan/simple_tense_detector). We modified some of the code which is presented in `codes/exp_tense/tense_detector_t.py`.  
 To extract keywords from each review sentence, we use this command.
 
     ```bash
@@ -100,6 +100,8 @@ Now, the files in `/path/to/processed/yelp` should be like this:
 
     Translate target sentences to French use any MT model you like. We uses `codes/translate_en_fr/summon_dummy.sh`.
 
+    Repeat the same operation with validation and test set (newstest2013 and newstest2014).
+
 3. Perform sentencepiece tokenization on the text files and save the tokenized files into `/path/to/processed/wmt`. The script is in `codes/spm.sh`.
 
 Now, the files in `/path/to/processed/wmt` should be like this:
@@ -135,21 +137,29 @@ After merging different prompts and gates, you can evaluate the model on differe
 
 1. Process the manual constraints for test set in `/path/to/processed/yelp/infer`, each of the file contains 375 lines of constraint sentences. For example, `neg_label.375.spm.txt` contains 375 lines of `This is a negative review.` and is tokenized.
 
-    Tokenized prefixes used in the paper are in `data\infer_gen\pre_tokens.25.spm.txt`. Positive key words and negative key words for inference are ramdomly sampled and tokenized in `data\infer_gen\maskfix.pos.375.spm.txt` and `data\infer_gen\maskfix.neg.375.spm.txt`. You still nees to install [this repo](https://github.com/ajitrajasekharan/simple_tense_detector) to evaluate the tense attribute.
+    Tokenized prefixes used in the paper are in `data/infer_gen/pre_tokens.25.spm.txt`. Positive key words and negative key words for inference are ramdomly sampled and tokenized in `data/infer_gen/maskfix.pos.375.spm.txt` and `data/infer_gen/maskfix.neg.375.spm.txt`. You still nees to install [this repo](https://github.com/ajitrajasekharan/simple_tense_detector) to evaluate the tense attribute.
 
 2. Train a classifier on sentiment and food category. The script is in `codes/train_classifier/train_*.py`. Follow the paper to oversample the raw data and train the classifiers.
 
-3. Run `codes\infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
+3. Run `codes/infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
 
 ### Machine Translation
+
+1. Run `codes/infer_train_translation.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
+
+2. With the translated results, use `codes/exp_tense/calc_tense_acc.py` to evaluate the accuracy of tense attribute.
 
 ## Checkpoints
 
-> To be realeased.
+Remember to check how many prompts and gates are in the checkpoint and merge them into one model if necessary.
 
 ### Generation
 
+The checkpoints with prompts and gates of different attributes are in [google drive](https://drive.google.com/drive/folders/1Tg7kZX4h01rb44ld6z65yFaWTUMGDZbn?usp=sharing).
+
 ### Machine Translation
+
+The checkpoints with prompts and gates are in [google drive](https://drive.google.com/drive/folders/1O_hyjwIsV6fNYifvbcgFBYp0HUGGRrPs?usp=sharing).
 
 ## Citation
 
@@ -164,7 +174,3 @@ If you find this repo helpful, please cite the following:
   year={2023}
 }
 ```
-
-## License
-
-> To-do: add license.

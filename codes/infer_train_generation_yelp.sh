@@ -21,7 +21,7 @@ trg=./gen_$comb.375.spm
 v_src=/path/to/pretrain_BART/vocab.txt
 v_trg=/path/to/pretrain_BART/vocab.txt
 
-ckpt=$base_dir/$exp_name/test
+ckpt=$base_dir/$exp_name/test # should have model-{1,2,...}.pt in the dir
 ref_csr=/path/to/processed/yelp/maskfix.pos.375.txt
 ref_ten=$valid_dir/present_label.375.txt
 
