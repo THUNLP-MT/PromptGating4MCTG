@@ -8,7 +8,7 @@ This is the repo for our work “[An Extensible Plug-and-Play Method for Multi-A
 
 Model Structure:
 
-![model](figs/method.png)
+<a href="url"><img src="figs/method.png" align="middle" width="450"  ></a>
 
 ## Requirements
 
@@ -115,7 +115,7 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 
 ## Training
 
-### Generation
+### Text Generation
 
 1. Download vocabulary file of BART model into `/path/to/pretrain_BART`. If the file is in json format, then convert it with `codes/pretrain_BART/process_vocab.py`. And also prepare `config.json` and `pytorch_model.bin` in `/path/to/pretrain_BART`.
 
@@ -133,7 +133,7 @@ After training, you can transfer the prompts and gates of each model into one mo
 
 After merging different prompts and gates, you can evaluate the model on different tasks.
 
-### Generation
+### Text Generation
 
 1. Process the manual constraints for test set in `/path/to/processed/yelp/infer`, each of the file contains 375 lines of constraint sentences. For example, `neg_label.375.spm.txt` contains 375 lines of `This is a negative review.` and is tokenized.
 
@@ -153,7 +153,7 @@ After merging different prompts and gates, you can evaluate the model on differe
 
 Remember to check how many prompts and gates are in the checkpoint and merge them into one model if necessary.
 
-### Generation
+### Text Generation
 
 The checkpoints with prompts and gates of different attributes are in [google drive](https://drive.google.com/drive/folders/1Tg7kZX4h01rb44ld6z65yFaWTUMGDZbn?usp=sharing).
 
