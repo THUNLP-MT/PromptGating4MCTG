@@ -2,13 +2,21 @@
 
 This is the repo for our work “[An Extensible Plug-and-Play Method for Multi-Aspect Controllable Text Generation](https://arxiv.org/abs/2212.09387v2)” (ACL 2023).
 
-## Method Overview
+Our work focuses on **Multi-Aspect Controllable Text Generation (MCTG)** that controls the generated text in multiple aspects (e.g., sentiment, topic, and keywords). Our approach, **Prompt Gating**, is based on parameter efficient tuning methods (e.g., prefix-tuning), which control aspects by inserting trainable prompts or prefixes into the model, referred to as plugins. Specifically, Prompt Gating achieves higher fulfillment of constraints while maintaining the efficiency of training and inference. Each plugin for a single aspect is trained individually and is trained only once. Multi-aspect controlling is realized by synthesizing multiple plugins without training. Please refer to our [paper](https://arxiv.org/abs/2212.09387v2) for more details.
+
+
+## Method
+
+**Overview of our method**:
 
 ![method](figs/extensible.png)
+Each plugin for a single aspect is trained individually and is trained only once. The combination of multiple aspects of constraints is realized by concatenating multiple plugins without training (i.e., in a zero-shot manner).
 
-Model Structure:
+**Model structure**:
 
-<a href="url"><img src="figs/method.png" align="middle" width="450"  ></a>
+<a href="url"><img src="figs/method.png" align="middle" width="400"  ></a>
+
+It shows the case of inference stage of double-aspect controlled text generation. Blue and purple represent lexical and sentimental constraints respectively. Continuous prompts and contextual contexts are fed into the model and  trainable gates are applied to steer the pretrained model as well as alleviate the mutual interference of plugins.
 
 ## Requirements
 
@@ -28,7 +36,7 @@ pip install -r requirements_eval.txt
 
 ## Data Preparation
 
-### Yelp
+### Yelp for Text Generation
 
 1. Prepare [Yelp](http://tts.speech.cs.cmu.edu/style_models/yelp_reviews.txt) dataset following the guidance on [this repo](https://github.com/facebookresearch/MultipleAttributeTextRewriting/tree/main/data#1-fyelp).
 
@@ -80,7 +88,7 @@ Now, the files in `/path/to/processed/yelp` should be like this:
 └── neg/usa/mexi/asian/mask(keywords)/future/past/present......
 ```
 
-### WMT14DEEN
+### WMT14 DE-EN for Machine Translation
 
 1. Prepare WMT14 DE-EN dataset in parallel format in `/path/to/processed/wmt`.
 
