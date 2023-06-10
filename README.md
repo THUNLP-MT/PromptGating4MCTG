@@ -175,11 +175,11 @@ After merging different prompts and gates, you can evaluate the model on differe
 
 2. Train a classifier on sentiment and food category. The script is in `codes/train_classifier/train_*.py`. Follow the paper to oversample the raw data and train the classifiers.
 
-3. Run `codes/infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
+3. Run `codes/infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` simultaneously according to the combination of prompts and gates you want to evaluate.
 
 ### Machine Translation
 
-1. Run `codes/infer_train_translation.sh` and remember to change the `src_attached` and `prompt_attached` symultaneously according to the combination of prompts and gates you want to evaluate.
+1. Run `codes/infer_train_translation.sh` and remember to change the `src_attached` and `prompt_attached` simultaneously according to the combination of prompts and gates you want to evaluate.
 
 2. With the translated results, use `codes/exp_tense/calc_tense_acc.py` to evaluate the accuracy of tense attribute.
 
