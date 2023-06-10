@@ -48,13 +48,13 @@ It shows the case of inference stage of double-aspect controlled text generation
 
 Two different virtual environments are required for training and evaluation.
 
-### Training
+**Training**
 
 ```bash
 pip install -r requirements_training.txt
 ```
 
-### Evaluation
+**Evaluation**
 
 ```bash
 pip install -r requirements_eval.txt
