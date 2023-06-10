@@ -4,6 +4,31 @@ This is the repo for our work “[An Extensible Plug-and-Play Method for Multi-A
 
 Our work focuses on **Multi-Aspect Controllable Text Generation (MCTG)** that controls the generated text in multiple aspects (e.g., sentiment, topic, and keywords). Our approach, **Prompt Gating**, is based on parameter efficient tuning methods (e.g., prefix-tuning), which control aspects by inserting trainable prompts or prefixes into the model, referred to as plugins. Specifically, Prompt Gating achieves higher fulfillment of constraints while maintaining the efficiency of training and inference. Each plugin for a single aspect is trained individually and is trained only once. Multi-aspect controlling is realized by synthesizing multiple plugins without training. Please refer to our [paper](https://arxiv.org/abs/2212.09387v2) for more details.
 
+## Contents
+
+* [Examples](#examples)
+* [Method](#method)
+* [Requirements](#requirements)
+* [Data Preparation](#data-preparation)
+* [Training](#training)
+* [Evaluation](#evaluation)
+* [Checkpoints](#checkpoints)
+* [Citation](#citation)
+
+
+## Examples
+**Text Generation**
+| Topic | Sentiment | Generated Text          |
+| ------------- | ----------- |----------- |
+| Mexican     | Positive     | While this is happening i’m going here for dinner for the first time. the food here was very, very good and very tasty!! we ordered a couple of different salads and some tacos. i got a vego beef taco with a spicy sauce (it is very good). i also got an onion rings (it does not have any onions, nor are there many onions in this recipe), and it was delicious!|
+| Asian     | Positive     | Once upon a time i was at the restaurant and had dinner at a friend’s place, the food was great. the chef is very knowledgeable (the owner’s daughter is a sushi professional), but i can only say that the restaurant was very clean and the food was very flavor. |
+| Asian | Negative      |While this is happening, i’ve never been here to the japanese section and have never eaten here before. the place is small and the place is crowded. the food is small, and the service isn’t very friendly. i did not expect to spend a lot of money for a sushi place because it’s pretty small. they have a few places where they can take a large order and they give it to those who pay for the food. also the staff seems to ignore you if you come for sushi.|
+
+**Machine Translation**
+| Keywords | Tense | Knowledge (French) | Source (German) | Generated Translation |
+| ------------- | ----------- |----------- |  ----------- |----------- |
+| "This", "bedroom", "completely"| Past | Cette chambre et une autre ont été complètement brûlées. | Dieses und ein weiteres Zimmer brannten vollständig aus. | This and another bedroom burned completely out.|
+| "attempt" | Future | Demain, il tentera de s’entraîner avec l’équipe. | Morgen wird er versuchen, mit der Mannschaft zu trainieren. | Tomorrow he will attempt to train with the team.|
 
 ## Method
 
@@ -17,6 +42,7 @@ Each plugin for a single aspect is trained individually and is trained only once
 <a href="url"><img src="figs/method.png" align="middle" width="400"  ></a>
 
 It shows the case of inference stage of double-aspect controlled text generation. Blue and purple represent lexical and sentimental constraints respectively. Continuous prompts and contextual contexts are fed into the model and  trainable gates are applied to steer the pretrained model as well as alleviate the mutual interference of plugins.
+
 
 ## Requirements
 
