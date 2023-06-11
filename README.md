@@ -34,7 +34,7 @@ pip install -r requirements_eval.txt
 
 2. Detokenize the raw text and discard the samples with a sentiment score of 3 (neutral).
 
-3. Sample 30k/3k samples for training and validation respectively, and for positive/negative sentiment, Asian/USA/Mexican food respectively. (Remember the other attributes are balanced in each training/validation set.)  
+3. Sample 30k/3k samples for training and validation respectively, and for positive/negative sentiment, Asian/USA/Mexican food respectively. (The other attributes are balanced in each training/validation set.)  
 To identify the tense of each review sentence, we use [this repo](https://github.com/ajitrajasekharan/simple_tense_detector). We modified some of the code which is presented in `codes/exp_tense/tense_detector_t.py`.  
 To extract keywords from each review sentence, we use this command.
 
@@ -42,7 +42,7 @@ To extract keywords from each review sentence, we use this command.
     cat /path/to/yelp/sent_valid.txt | python codes/thumt_gen/scripts/sample_mask.py > /path/to/processed/yelp/mask_sent_valid.txt
     ```
 
-4. Save these samples into `/path/to/processed/yelp`. The training/validation set of Each attribute has two files with text and manual constraints in each line.
+4. Save these samples into `/path/to/processed/yelp`. The training/validation set of each attribute has two files with text and manual constraints in each line.
 
     ```txt
     # pos_sent_valid.txt
@@ -77,7 +77,7 @@ Now, the files in `/path/to/processed/yelp` should be like this:
 ├── pos_label_valid.spm.txt
 ├── pos_sent_train.spm.txt
 ├── pos_sent_valid.spm.txt
-└── neg/usa/mexi/asian/mask(keywords)/future/past/present......
+└── {neg,usa,mexi,asian,mask(keywords),future,past,present}_{label,sent}_{train,valid}.spm.txt
 ```
 
 ### WMT14DEEN
@@ -110,7 +110,7 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 ├── train.spm.en
 ├── train.spm.fr
 ├── train.spm.de
-└── ......
+└── train.spm.{en.masked.num.s,en.tense}
 ```
 
 ## Training
@@ -125,7 +125,7 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 
 1. Download vocabulary file of mBART model and other files in the [google drive](https://drive.google.com/drive/folders/1wqmM6eR1AG66ano-zbCzYykWoaQvYTJO?usp=sharing) into `/path/to/pretrain_mBART`.
 
-2. Choose one script of `exp_train_*.sh` and run it.
+2. Choose one script of `exp_train_translation_*.sh` and run it.
 
 After training, you can transfer the prompts and gates of each model into one model and evaluate it. Some example script is `codes/thumt/scripts/substitute_prompt_gating.py`, `codes/thumt_gen/scripts/substitute_prompt_gating.py`
 
@@ -160,6 +160,8 @@ The checkpoints with prompts and gates of different attributes are in [google dr
 ### Machine Translation
 
 The checkpoints with prompts and gates are in [google drive](https://drive.google.com/drive/folders/1O_hyjwIsV6fNYifvbcgFBYp0HUGGRrPs?usp=sharing).
+
+### Prompt and Gates Transfer
 
 ## Citation
 

@@ -44,7 +44,7 @@ from transformers.modeling_outputs import (
 from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import logging
 
-from thumt.models.PrefixTuning import SegmentEmbedding
+from thumt.models.PromptGating import SegmentEmbedding
 
 
 logger = logging.get_logger(__name__)

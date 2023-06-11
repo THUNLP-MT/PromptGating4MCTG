@@ -15,7 +15,7 @@ import thumt.modules as modules
 from thumt.models.modeling_mbart import MBartForConditionalGeneration
 from transformers import MBartConfig
 
-from thumt.models.PrefixTuning import PromptEncoder, GatingModule, PrefixTuning
+from thumt.models.PromptGating import PromptEncoder, GatingModule, PrefixTuning
 
 class AttentionSubLayer(modules.Module):
 
