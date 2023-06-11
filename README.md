@@ -64,10 +64,25 @@ pip install -r requirements_eval.txt
 
 ## Quick Start
 
-> To be updated.
+To quickly start with our code, you can download the [checkpoints](#checkpoints) of our model and run the following command to generate text with constraints.
 
+1. Put the downloaded checkpoints into `codes/checkpoints/`.
 
-> Instruction below is for reproducing the results of our paper.
+2. Merge different prompts and gates that you need into one checkpoint. For example, to generate text with constraints of positive sentiment and usa topic, you need to merge `codes/checkpoints/model-pos.pt` and `codes/checkpoints/model-usa.pt` into one checkpoint, and save it in `codes/checkpoints/test`. You can use scripts in `codes/{thumt,thumt_gen}/scripts/substitute_prompt_gating.py` for each attribute (use `codes/thumt_gen/scripts/substitute_prompt_gating_pre_encoder.py` for tense attribute in the generation task and French constraints in the translation task).
+
+3. Prepare your data for inference like Yelp or WMT dataset in [Data Preparation](#data-preparation)
+and change the paths of files and in `codes/infer_{translation,generation}.sh`.
+
+4. Run the following command to inference with constraints.
+
+    ```bash
+    cd codes
+    bash infer_{translation,generation}.sh
+    ```
+
+    The generated text will be saved in `codes/checkpoints/test`.
+
+> Instructions below are for reproducing the results of our paper.
 
 ## Data Preparation
 
