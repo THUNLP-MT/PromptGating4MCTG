@@ -9,15 +9,17 @@ Our work focuses on **Multi-Aspect Controllable Text Generation (MCTG)** that co
 * [Examples](#examples)
 * [Method](#method)
 * [Requirements](#requirements)
+* [Quick Start](#quick-start)
 * [Data Preparation](#data-preparation)
 * [Training](#training)
 * [Evaluation](#evaluation)
 * [Checkpoints](#checkpoints)
 * [Citation](#citation)
 
-
 ## Examples
+
 **Text Generation**
+
 | Topic | Sentiment | Generated Text          |
 | ------------- | ----------- |----------- |
 | Mexican     | Positive     | While this is happening i’m going here for dinner for the first time. the food here was very, very good and very tasty!! we ordered a couple of different salads and some tacos. i got a vego beef taco with a spicy sauce (it is very good). i also got an onion rings (it does not have any onions, nor are there many onions in this recipe), and it was delicious!|
@@ -25,6 +27,7 @@ Our work focuses on **Multi-Aspect Controllable Text Generation (MCTG)** that co
 | Asian | Negative      |While this is happening, i’ve never been here to the japanese section and have never eaten here before. the place is small and the place is crowded. the food is small, and the service isn’t very friendly. i did not expect to spend a lot of money for a sushi place because it’s pretty small. they have a few places where they can take a large order and they give it to those who pay for the food. also the staff seems to ignore you if you come for sushi.|
 
 **Machine Translation**
+
 | Keywords | Tense | Knowledge (French) | Source (German) | Generated Translation |
 | ------------- | ----------- |----------- |  ----------- |----------- |
 | "This", "bedroom", "completely"| Past | Cette chambre et une autre ont été complètement brûlées. | Dieses und ein weiteres Zimmer brannten vollständig aus. | This and another bedroom burned completely out.|
@@ -43,7 +46,6 @@ Each plugin for a single aspect is trained individually and is trained only once
 
 It shows the case of inference stage of double-aspect controlled text generation. Blue and purple represent lexical and sentimental constraints respectively. Continuous prompts and contextual contexts are fed into the model and  trainable gates are applied to steer the pretrained model as well as alleviate the mutual interference of plugins.
 
-
 ## Requirements
 
 Two different virtual environments are required for training and evaluation.
@@ -60,6 +62,13 @@ pip install -r requirements_training.txt
 pip install -r requirements_eval.txt
 ```
 
+## Quick Start
+
+> To be updated.
+
+
+> Instruction below is for reproducing the results of our paper.
+
 ## Data Preparation
 
 ### Yelp for Text Generation
@@ -68,7 +77,7 @@ pip install -r requirements_eval.txt
 
 2. Detokenize the raw text and discard the samples with a sentiment score of 3 (neutral).
 
-3. Sample 30k/3k samples for training and validation respectively, and for positive/negative sentiment, Asian/USA/Mexican food respectively. (The other attributes are balanced in each training/validation set.)  
+3. Sample 30k/3k samples for training and validation respectively, and for positive/negative sentiment, Asian/USA/Mexican food respectively. (All other attributes should be balanced in each training/validation set.)  
 To identify the tense of each review sentence, we use [this repo](https://github.com/ajitrajasekharan/simple_tense_detector). We modified some of the code which is presented in `codes/exp_tense/tense_detector_t.py`.  
 To extract keywords from each review sentence, we use this command.
 
@@ -157,25 +166,27 @@ Now, the files in `/path/to/processed/wmt` should be like this:
 
 ### Machine Translation
 
+> Because of the large size of the vocabulary of mBART model, we provide a cutted model with vocabulary size of 6w to save memory.
+
 1. Download vocabulary file of mBART model and other files in the [google drive](https://drive.google.com/drive/folders/1wqmM6eR1AG66ano-zbCzYykWoaQvYTJO?usp=sharing) into `/path/to/pretrain_mBART`.
 
 2. Choose one script of `exp_train_translation_*.sh` and run it.
 
-After training, you can transfer the prompts and gates of each model into one model and evaluate it. Some example script is `codes/thumt/scripts/substitute_prompt_gating.py`, `codes/thumt_gen/scripts/substitute_prompt_gating.py`
+## Inference
 
-## Evaluation
-
-After merging different prompts and gates, you can evaluate the model on different tasks.
+After merging different prompts and gates, you can perform inference the model on different tasks. The first step of instruction below is for inference, and the other steps are for evaluation.
 
 ### Text Generation
 
 1. Process the manual constraints for test set in `/path/to/processed/yelp/infer`, each of the file contains 375 lines of constraint sentences. For example, `neg_label.375.spm.txt` contains 375 lines of `This is a negative review.` and is tokenized.
 
-    Tokenized prefixes used in the paper are in `data/infer_gen/pre_tokens.25.spm.txt`. Positive key words and negative key words for inference are ramdomly sampled and tokenized in `data/infer_gen/maskfix.pos.375.spm.txt` and `data/infer_gen/maskfix.neg.375.spm.txt`. You still needs to install [this repo](https://github.com/ajitrajasekharan/simple_tense_detector) to evaluate the tense attribute.
+    Tokenized prefixes used in the paper are in `data/infer_gen/pre_tokens.25.spm.txt`. Positive key words and negative key words for inference are ramdomly sampled and tokenized in `data/infer_gen/maskfix.pos.375.spm.txt` and `data/infer_gen/maskfix.neg.375.spm.txt`.
 
 2. Train a classifier on sentiment and food category. The script is in `codes/train_classifier/train_*.py`. Follow the paper to oversample the raw data and train the classifiers.
 
-3. Run `codes/infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` simultaneously according to the combination of prompts and gates you want to evaluate.
+3. You still needs to install [this repo](https://github.com/ajitrajasekharan/simple_tense_detector) to evaluate the tense attribute.
+
+4. Run `codes/infer_train_generation_yelp.sh` and remember to change the `src_attached` and `prompt_attached` simultaneously according to the combination of prompts and gates you want to evaluate.
 
 ### Machine Translation
 
@@ -191,11 +202,13 @@ Remember to check how many prompts and gates are in the checkpoint and merge the
 
 The checkpoints with prompts and gates of different attributes are in [google drive](https://drive.google.com/drive/folders/1Tg7kZX4h01rb44ld6z65yFaWTUMGDZbn?usp=sharing).
 
+You can transfer the prompts and gates of each model into another model (or merge different prompts and gates into one model) by using example scripts `codes/thumt/scripts/substitute_prompt_gating.py` or `codes/thumt_gen/scripts/substitute_prompt_gating.py`.
+
 ### Machine Translation
 
 The checkpoints with prompts and gates are in [google drive](https://drive.google.com/drive/folders/1O_hyjwIsV6fNYifvbcgFBYp0HUGGRrPs?usp=sharing).
 
-### Prompt and Gates Transfer
+> The prompts and gates of keywords, tense and French are already merged in the same checkpoint.
 
 ## Citation
 
