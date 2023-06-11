@@ -79,15 +79,6 @@ class GatingModule(nn.Module):
         adding_embeds = cat([F.dropout(adding_embeds[i], p=self.dropout, training=self.training) if attach[i] else Tensor([]) for i in range(self.seg_num)], axis=0)
         adding_embeds = adding_embeds.view(-1, self.layer_num, self.embed_dim)
               
-        # for i in range(self.seg_num):
-        #     if i == 0:
-        #         continue
-        #     idx2name = {1: 'mask', 2: 'tense', 3: 'fr'}
-        #     OUTPUT_PT = "/home/lzj/lzj/plug4MSG/pluginMSG/analyse_gate_tr/b"
-        #     output_i = OUTPUT_PT + idx2name[i]
-        #     for j in range(self.layer_num):
-        #         output_j = output_i + str(j) + '.pt'
-        #         torch.save(adding_embeds[i*self.prompt_num:(i+1)*self.prompt_num][j], output_j)
   
         # gate
         gating_embeds = [self.new_gating_wte[i](self.new_adding_gating_ids) if attach[i] else None for i in range(self.seg_num)]
@@ -95,17 +86,6 @@ class GatingModule(nn.Module):
         gating_embeds = cat([F.dropout(gating_embeds[i], p=self.dropout, training=self.training) if attach[i] else Tensor([]) for i in range(self.seg_num)], axis=0)
         gating_embeds = gating_embeds.view(-1, self.layer_num, self.embed_dim)
 
-        # for i in range(self.seg_num):
-        #     if i == 0:
-        #         continue
-        #     idx2name = {1: 'mask', 2: 'tense', 3: 'fr'}
-        #     OUTPUT_PT = "/home/lzj/lzj/plug4MSG/pluginMSG/analyse_gate_tr/"
-        #     output_i = OUTPUT_PT + idx2name[i]
-        #     for j in range(self.layer_num):
-        #         output_j = output_i + str(j) + '.pt'
-        #         torch.save(gating_embeds[i*self.prompt_num:(i+1)*self.prompt_num][j], output_j)
-        
-        # exit(0)
 
         return adding_embeds, gating_embeds
 
