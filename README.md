@@ -84,6 +84,129 @@ and change the paths of files and in `codes/infer_{translation,generation}.sh`.
 
 > Instructions below are for reproducing the results of our paper.
 
+### Use Prompt Gating in your BART(Enc-Dec) model
+
+1. Find `Segment Embedding`, `Prompt Encoder` and `GatingModule` in `codes/thumt/models/PromptGating.py`. Include them into your code.
+
+    ```Python
+    class SegmentEmbedding(nn.Module):
+        def __init__(self, num_embeddings: int, embedding_dim: int):
+            ...
+
+    class PromptEncoder(nn.Module):
+        def __init__(self, embed_dim, hidden_dim, prompt_num=100, seg_num=2, pri_dim=512):
+            ...
+
+    class GatingModule(nn.Module):
+        def __init__(self, prompt_num: int, embed_dim: int, dropout, hidden_dim: int = 512, pri_dim: int = 512, seg_num: int = 2, layer_num: int = 12) -> None:
+            ...
+    ```
+
+2. Add the segment embeddings to different sources.
+
+    ```Python
+    # Process inputs
+    # Suppose your first input sequence is features["source"] and the rest in features["hypothesis"]
+    seg_mask = torch.cat([torch.zeros(features["source"].shape, dtype=torch.long) if self.src_attached[0] else torch.tensor([], dtype=torch.long), ] +
+        [torch.ones(hyp.shape, dtype=torch.long).fill_(idp+1) if self.src_attached[idp+1] else torch.tensor([], dtype=torch.long) for idp, hyp in enumerate(features["hypothesis"])], axis=1)
+
+    # in BartEncoder.forward
+    # Suppose your first input ids is input_ids["src"] and the rest in input_ids["hypo"]
+    def forward(
+        self, input_ids, attention_mask=None, output_attentions=False, output_hidden_states=False, return_dict=False, 
+        prompt_enc=None, gating_enc=None, prefix_enc=None, pre_encode_fr=False, fr_mask=None
+    ):
+        inputs_embeds_list = []
+        if input_ids["src"] is not None:
+            inputs_embeds_list.append(self.embed_tokens(input_ids["src"]) * self.embed_scale + self.embed_positions(input_ids["src"]))
+        if input_ids["hypo"] is not None and len(input_ids["hypo"]) > 0:
+            for hyp in input_ids["hypo"]:
+                inputs_embeds_list.append(self.embed_tokens(hyp) * self.embed_scale + self.embed_positions(hyp))
+
+        input_segment_ids = input_ids["seg_mask"]
+        embed_seg = self.embed_segments(input_segment_ids)
+        x = inputs_embeds + embed_seg
+
+        # Proceed with `x`
+        ...
+    ```
+
+3. Feed prompt generated from `Prompt Encoder` into the model.
+
+    ```Python
+    # in BartEncoder.forward
+    # Suppose your first input ids is input_ids["src"] and the rest in input_ids["hypo"]
+    def forward(
+        self, input_ids, attention_mask=None, output_attentions=False, output_hidden_states=False, return_dict=False, 
+        prompt_enc=None, gating_enc=None, prefix_enc=None, pre_encode_fr=False, fr_mask=None
+    ):
+        ...
+        
+        # Proceed with `x`
+        if prompt_enc is not None:
+            prompt = prompt_enc([True for _ in [input_ids["src"]]+input_ids["hypo"]])
+            if prompt is not None:
+                prompt = prompt.expand(x.size()[0], -1, -1)
+                x = torch.cat([prompt, x], axis=1)
+    ```
+
+4. Append gates at each layer.
+
+    ```Python
+    # in EncoderLayer.forward
+    def forward(self, x, encoder_padding_mask, output_attentions=False, attach=None, adding=None, gating=None, prefixkv=None):
+        ...
+
+        if gating is not None:
+            gating = gating.unsqueeze(0).expand(x.size(1), -1, -1).transpose(0, 1)
+            gating = torch.cat([gating, torch.ones([x.size(0)-gating.size(0), x.size(1), x.size(2)])], axis=0)
+            x = x * gating
+
+        if adding is not None:
+            adding = adding.unsqueeze(0).expand(x.size(1), -1, -1).transpose(0, 1)
+            adding = torch.cat([adding, torch.zeros([x.size(0)-adding.size(0), x.size(1), x.size(2)])], axis=0)
+
+            x = adding + x
+        
+        ...
+
+    # in BartEncoder.forward
+    # Suppose `gating_enc` is an instance of `GatingModule`
+    def forward(
+        self, input_ids, attention_mask=None, output_attentions=False, output_hidden_states=False, return_dict=False, 
+        prompt_enc=None, gating_enc=None, prefix_enc=None, pre_encode_fr=False, fr_mask=None
+    ):
+
+        ...
+        gating = gating_enc(input_ids['attach'])
+            if gating is not None:
+                adding, gating = gating
+
+        ...
+        # Feeding the input to each encoder layer
+        encoder_states = [] if output_hidden_states else None
+        all_attentions = () if output_attentions else None
+        for ide, encoder_layer in enumerate(self.layers):
+            if output_hidden_states:
+                encoder_states.append(x)
+            # add LayerDrop (see https://arxiv.org/abs/1909.11556 for description)
+            dropout_probability = random.uniform(0, 1)
+            if self.training and (dropout_probability < self.layerdrop):  # skip the layer
+                attn = None
+            else:
+                x, attn = encoder_layer(x, attention_mask,
+                                        output_attentions=output_attentions, 
+                                        attach=input_ids['attach'] if 'attach' in input_ids and input_ids['attach'] is not None else None,
+                                        adding=adding[:, ide, :] if adding is not None else None, # Changed Here
+                                        gating=gating[:, ide, :] if gating is not None else None, # Changed Here
+                                        )
+
+            if output_attentions:
+                all_attentions = all_attentions + (attn,)
+
+        ...
+    ```
+
 ## Data Preparation
 
 ### Yelp for Text Generation
